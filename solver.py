@@ -23,7 +23,7 @@ logger = SummaryWriter(log_dir="results/metrics")
 dataset = D.generate_dummy_dataset("D:/Datasets/ISCXVPN2016/", size=bytecount)
 dataloader = D.utils.DataLoader(dataset, batch_size=10, shuffle=True)
 
-classifier = M.SimpleClassifier(in_features=bits, nclasses=3)
+classifier = M.SimpleClassifier(in_features=bits, nclasses=5)
 optimizer = optim.Adam(classifier.parameters())
 
 for e in range(epochs):

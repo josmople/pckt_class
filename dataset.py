@@ -74,15 +74,19 @@ def generate_dummy_dataset(path, **kwds):
     transform = partial(generate_pcap_dataset, **kwds)
     ds = ISCXVPN2016Dataset(path, transform, include_filename=False)
 
-    hangout = ds.find("hangouts_audio1a.pcap")
-    facebook = ds.find("facebook_audio1a.pcap")
-    skype = ds.find("skype_audio1a.pcap")
+    hangout = ds.find("hangouts_audio1a.pcap") + ds.find("hangouts_audio2a.pcap")
+    facebook = ds.find("facebook_audio1a.pcap") + ds.find("facebook_audio2a.pcap")
+    skype = ds.find("skype_audio1a.pcap") + ds.find("skype_audio2a.pcap")
+    spotify = ds.find("spotify1.pcap") + ds.find("spotify2.pcap")
+    vimeo = ds.find("vimeo1.pcap") + ds.find("vimeo2.pcap")
 
     hangout_labels = [0] * len(hangout)
     facebook_labels = [1] * len(facebook)
     skype_labels = [2] * len(skype)
+    spotify_labels = [3] * len(spotify)
+    vimeo_labels = [4] * len(vimeo)
 
-    packets = hangout + facebook + skype
-    labels = hangout_labels + facebook_labels + skype_labels
+    packets = hangout + facebook + skype + spotify + vimeo
+    labels = hangout_labels + facebook_labels + skype_labels + spotify_labels + vimeo_labels
 
     return utils.dzip(packets, labels)
