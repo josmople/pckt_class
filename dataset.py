@@ -20,9 +20,10 @@ class PCAPDataset(utils.model.ValueDataset):
 
 
 def generate_pcap_dataset(path: str, size: int = 40, verbose: bool = False, lazy: bool = False):
+    from pcapfile.linklayer import ethernet
 
     def transform(packet):
-        raw_bytes = packet.raw()
+        raw_bytes = ethernet.strip_ethernet(packet.raw())
         raw_size = len(raw_bytes)
         missing_size = max(0, size - raw_size)
         missing_bytes = bytes([0] * missing_size)
