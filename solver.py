@@ -26,9 +26,9 @@ dataloader = D.utils.DataLoader(dataset, batch_size=200, shuffle=True)
 classifier = M.SimpleClassifier(in_features=bits, nclasses=5).cuda()
 optimizer = optim.Adam(classifier.parameters())
 
+step = 0
 for e in range(epochs):
     for i, (x, l) in enumerate(tqdm(dataloader)):
-        step = e * len(dataloader) + i
 
         y = classifier(x.cuda())
         loss = nn.functional.cross_entropy(y, l.cuda())
@@ -41,3 +41,5 @@ for e in range(epochs):
 
         if step % 500 == 0:
             print(f"Step={step} :: loss={loss.item():02f}")
+
+        step += 1
