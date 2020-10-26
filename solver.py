@@ -21,17 +21,17 @@ step = 0
 logger = SummaryWriter(log_dir="results/metrics")
 
 dataset = D.generate_dummy_dataset("D:/Datasets/ISCXVPN2016/", size=bytecount)
-dataloader = D.utils.DataLoader(dataset, batch_size=10, shuffle=True)
+dataloader = D.utils.DataLoader(dataset, batch_size=200, shuffle=True)
 
-classifier = M.SimpleClassifier(in_features=bits, nclasses=5)
+classifier = M.SimpleClassifier(in_features=bits, nclasses=5).cuda()
 optimizer = optim.Adam(classifier.parameters())
 
 for e in range(epochs):
     for i, (x, l) in enumerate(tqdm(dataloader)):
         step = e * len(dataloader) + i
 
-        y = classifier(x)
-        loss = nn.functional.cross_entropy(y, l)
+        y = classifier(x.cuda())
+        loss = nn.functional.cross_entropy(y, l.cuda())
 
         optimizer.zero_grad()
         loss.backward()

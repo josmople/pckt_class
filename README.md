@@ -5,6 +5,8 @@ https://pypi.org/project/pypcapkit/
 
 and PyTorch
 
+and TensorBoard
+
 # Installation
 
 Install Conda
@@ -16,6 +18,8 @@ Install PyTorch
 ```pip install pypcapfile```
 
 ```pip install pypcapkit```
+
+```pip install tensorboard```
 
 ```pip install tqdm```
 
