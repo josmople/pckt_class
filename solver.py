@@ -11,7 +11,7 @@ from torch.utils.tensorboard import SummaryWriter
 from tqdm import tqdm
 
 # User-provided
-epochs = 10
+epochs = 100
 bytecount = 40
 
 # Derived
@@ -23,7 +23,7 @@ logger = SummaryWriter(log_dir="results/metrics")
 dataset = D.generate_dummy_dataset("D:/Datasets/ISCXVPN2016/", size=bytecount)
 dataloader = D.utils.DataLoader(dataset, batch_size=200, shuffle=True)
 
-classifier = M.SimpleClassifier(in_features=bits, nclasses=5).cuda()
+classifier = M.SimpleClassifier(in_channels=bits, hidden_channels=[bits, bits, bits // 2, bits // 4, bits // 8, bits // 16], n_classes=5).cuda()
 optimizer = optim.Adam(classifier.parameters())
 
 step = 0
