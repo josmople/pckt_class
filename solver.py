@@ -15,10 +15,10 @@ from tqdm import tqdm
 epochs = 4
 bytecount = 40
 split = 0.9
-log_dir = "results/metrics"
+log_dir = "logs/metrics"
 dataset_dir = "D:/Datasets/ISCXVPN2016/"
-model_file = "results/weights/classifier.pth"
-results_file = "results/performance/scores.csv"
+model_file = "logs/weights/classifier.pth"
+results_file = "logs/performance/scores.csv"
 
 # Constant
 NCLASSES = 5
