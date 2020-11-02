@@ -3,3 +3,4 @@
 /results/metrics/*
 /results/performance/*
 /results/weights/*
+__pycache__
