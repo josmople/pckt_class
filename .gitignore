@@ -1,3 +1,5 @@
 .vscode
 /data/*
-/results/*
+/results/metrics/*
+/results/performance/*
+/results/weights/*
