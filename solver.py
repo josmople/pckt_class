@@ -27,7 +27,6 @@ train_phase = True
 eval_phase = True
 
 # Constant
-NCLASSES = 5
 ADDRESS_BYTES = 8
 
 # Derived
@@ -37,8 +36,8 @@ usable_bits = bits - address_bits
 step = 0
 
 
-classifier = M.SimpleClassifier(in_channels=usable_bits, hidden_channels=[bits, bits, bits // 2, bits // 4, bits // 8, bits // 16], n_classes=NCLASSES).cuda()
-dataset = D.generate_dummy_dataset(dataset_dir, size=bytecount)
+n_classes, dataset = D.generate_dummy_dataset(dataset_dir, size=bytecount)
+classifier = M.SimpleClassifier(in_channels=usable_bits, hidden_channels=[bits, bits, bits // 2, bits // 4, bits // 8, bits // 16], n_classes=n_classes).cuda()
 train_size = int(len(dataset) * split)
 test_size = len(dataset) - train_size
 train_ds, test_ds = data.random_split(dataset, [train_size, test_size], generator=torch.Generator().manual_seed(seed))
@@ -49,7 +48,6 @@ if train_phase:
     scheduler = optim.lr_scheduler.MultiStepLR(optimizer, milestones=[int(epochs * r) for r in lr_epoch_updates], gamma=0.1)
 
     step = 0
-    loss = 0
 
     dataloader = D.utils.DataLoader(train_ds, batch_size=1000, shuffle=True)
     logger = SummaryWriter(log_dir=log_dir)
@@ -84,8 +82,8 @@ if eval_phase:
 
     line = [
         "GT",
-        *[f"top_{i}" for i in range(NCLASSES)],
-        *[f"prob_{i}" for i in range(NCLASSES)]
+        *[f"top_{i}" for i in range(n_classes)],
+        *[f"prob_{i}" for i in range(n_classes)]
     ]
     results.write(",".join(line) + "\n")
 
@@ -98,7 +96,7 @@ if eval_phase:
         for i, (x, l) in enumerate(tqdm(dataloader)):
             scores = classifier(x.cuda()).squeeze(0).cpu()
             probs = torch.softmax(scores, dim=0)
-            topk = torch.topk(probs, k=NCLASSES)[1]
+            topk = torch.topk(probs, k=n_classes)[1]
             results.write(",".join([
                 str(l.item()),
                 *[str(i.item()) for i in topk],

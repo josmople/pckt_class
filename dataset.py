@@ -99,7 +99,7 @@ def generate_dummy_dataset(path, **kwds):
     all_datasets = sum(datasets[1:], datasets[0])
     all_labels = sum(labels[1:], labels[0])
 
-    return utils.dzip(all_datasets, all_labels)
+    return len(items), utils.dzip(all_datasets, all_labels)
     # facebook = ds.find("facebook_audio1a.pcap") + ds.find("facebook_audio2a.pcap")
     # skype = ds.find("skype_audio1a.pcap") + ds.find("skype_audio2a.pcap")
     # spotify = ds.find("spotify1.pcap") + ds.find("spotify2.pcap")
