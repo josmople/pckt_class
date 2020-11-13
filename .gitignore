@@ -1,6 +1,6 @@
 .vscode
 /data/*
-/results/metrics/*
-/results/performance/*
-/results/weights/*
+/logs/metrics/*
+/logs/performance/*
+/logs/weights/*
 __pycache__

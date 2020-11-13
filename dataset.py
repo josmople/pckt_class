@@ -29,6 +29,7 @@ def generate_pcap_dataset(path: str, size: int = 40, verbose: bool = False, lazy
         missing_bytes = bytes([0] * missing_size)
         all_data = raw_bytes + missing_bytes
         data = all_data[:size]
+        data = data[:12] + data[20:]
         bitstring = str.join("", map(lambda n: f"{n:08b}", data))
         bitarray = [float(c) for c in bitstring]
         return torch.tensor(bitarray)
@@ -75,19 +76,43 @@ def generate_dummy_dataset(path, **kwds):
     transform = partial(generate_pcap_dataset, **kwds)
     ds = ISCXVPN2016Dataset(path, transform, include_filename=False)
 
-    hangout = ds.find("hangouts_audio1a.pcap") + ds.find("hangouts_audio2a.pcap")
-    facebook = ds.find("facebook_audio1a.pcap") + ds.find("facebook_audio2a.pcap")
-    skype = ds.find("skype_audio1a.pcap") + ds.find("skype_audio2a.pcap")
-    spotify = ds.find("spotify1.pcap") + ds.find("spotify2.pcap")
-    vimeo = ds.find("vimeo1.pcap") + ds.find("vimeo2.pcap")
+    items = [
+        ("facebook_audio1a.pcap", "facebook_audio2a.pcap"),
+        ("skype_audio1a.pcap", "skype_audio2a.pcap"),
+        ("email1a.pcap", "email1b.pcap", "email2a.pcap", "email2b.pcap"),
+        ("spotify1.pcap", "spotify2.pcap"),
+        ("vimeo1.pcap", "vimeo2.pcap"),
+        ("hangouts_audio1a.pcap", "hangouts_audio2a.pcap")
+    ]
 
-    hangout_labels = [0] * len(hangout)
-    facebook_labels = [1] * len(facebook)
-    skype_labels = [2] * len(skype)
-    spotify_labels = [3] * len(spotify)
-    vimeo_labels = [4] * len(vimeo)
+    datasets = []
+    for item in items:
+        dataset = [ds.find(addr) for addr in item]
+        dataset = sum(dataset[1:], dataset[0])
+        datasets += [dataset]
 
-    packets = hangout + facebook + skype + spotify + vimeo
-    labels = hangout_labels + facebook_labels + skype_labels + spotify_labels + vimeo_labels
+    labels = []
+    for i, dataset in enumerate(datasets):
+        label = [i] * len(dataset)
+        labels += [label]
 
-    return utils.dzip(packets, labels)
+    all_datasets = sum(datasets[1:], datasets[0])
+    all_labels = sum(labels[1:], labels[0])
+
+    return utils.dzip(all_datasets, all_labels)
+    # facebook = ds.find("facebook_audio1a.pcap") + ds.find("facebook_audio2a.pcap")
+    # skype = ds.find("skype_audio1a.pcap") + ds.find("skype_audio2a.pcap")
+    # spotify = ds.find("spotify1.pcap") + ds.find("spotify2.pcap")
+    # vimeo = ds.find("vimeo1.pcap") + ds.find("vimeo2.pcap")
+    # hangout = ds.find("hangouts_audio1a.pcap") + ds.find("hangouts_audio2a.pcap")
+
+    # facebook_labels = [0] * len(facebook)
+    # skype_labels = [1] * len(skype)
+    # spotify_labels = [2] * len(spotify)
+    # vimeo_labels = [3] * len(vimeo)
+    # hangout_labels = [4] * len(hangout)
+
+    # packets = facebook + skype + spotify + vimeo + hangout
+    # labels = facebook_labels + skype_labels + spotify_labels + vimeo_labels + hangout_labels
+
+    # return utils.dzip(packets, labels)
